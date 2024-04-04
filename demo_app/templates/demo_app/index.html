@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Chat Room</title>
+
+    <script>
+
+        const  opentSocket = new WebSocket("ws://127.0.0.1:8000/ws/open-room/");
+
+        opentSocket.onopen = () => {
+        console.log("WebSocket connection opened");
+      }
+        opentSocket.onmessage = function(e) {
+
+            const data = JSON.parse(e.data);
+            var divElement = document.getElementById("open_messages");
+            var paragraph = document.createElement("p"); // Create <p> element
+            var textNode = document.createTextNode(data.message); // Create text node with content
+            paragraph.appendChild(textNode); // Append text node to <p> element
+            divElement.appendChild(paragraph);
+        };
+
+        opentSocket.onclose = function(e) {
+            console.error('Chat socket closed unexpectedly');
+        };
+        opentSocket.onerror = (error) => {
+        console.error("WebSocket error:", error);
+      }
+    </script>
+</head>
+<body>
+    <div id="open_messages">
+        <h2>Open messages from WS</h2>
+    </div>
+    <form method="get" action="private">
+        <input type="text" name="user" placeholder="username">
+        <input type="submit"  >
+
+    </form>
+</body>
+</html>

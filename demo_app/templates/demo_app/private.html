@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Chat Room</title>
+
+    <script>
+        const queryString = window.location.search;
+
+        // Create a new URLSearchParams object with the query string
+        const params = new URLSearchParams(queryString);
+
+        // Get the value of a specific parameter
+        const user = params.get('user');
+
+        const  sock = new WebSocket(`ws://127.0.0.1:8000/ws/private/${user}/`);
+
+        sock.onopen = () => {
+            console.log("private WebSocket connection opened");
+        }
+        sock.onmessage = function(e) {
+
+            const data = JSON.parse(e.data);
+            var divElement = document.getElementById("private_messages");
+            var paragraph = document.createElement("p"); // Create <p> element
+            var textNode = document.createTextNode(data.message); // Create text node with content
+            paragraph.appendChild(textNode); // Append text node to <p> element
+            divElement.appendChild(paragraph);
+        };
+
+        sock.onclose = function(e) {
+            console.error('private  socket closed unexpectedly');
+        };
+        sock.onerror = (error) => {
+            console.error("private  WebSocket error:", error);
+        }
+
+
+        // Open socket: duplicated from index.html
+        const  opentSocket = new WebSocket("ws://127.0.0.1:8000/ws/open-room/");
+
+        opentSocket.onopen = () => {
+        console.log("opentSocket connection opened");
+      }
+        opentSocket.onmessage = function(e) {
+
+            const data = JSON.parse(e.data);
+            var divElement = document.getElementById("open_messages");
+            var paragraph = document.createElement("p"); // Create <p> element
+            var textNode = document.createTextNode(data.message); // Create text node with content
+            paragraph.appendChild(textNode); // Append text node to <p> element
+            divElement.appendChild(paragraph);
+        };
+
+        opentSocket.onclose = function(e) {
+            console.error('opentSocket socket closed unexpectedly');
+        };
+        opentSocket.onerror = (error) => {
+        console.error("opentSocket error:", error);
+      }
+
+
+        // task messages
+        const  tasSocket = new WebSocket("ws://127.0.0.1:8000/ws/tasks/");
+
+        tasSocket.onopen = () => {
+        console.log("tasks WebSocket connection opened");
+      }
+        tasSocket.onmessage = function(e) {
+
+            const data = JSON.parse(e.data);
+            var divElement = document.getElementById("task_messages");
+            var paragraph = document.createElement("p"); // Create <p> element
+            var textNode = document.createTextNode(data.message); // Create text node with content
+            paragraph.appendChild(textNode); // Append text node to <p> element
+            divElement.appendChild(paragraph);
+        };
+
+        tasSocket.onclose = function(e) {
+            console.error('tasks socket closed unexpectedly');
+        };
+        tasSocket.onerror = (error) => {
+        console.error("tasks WebSocket error:", error);
+      }
+    </script>
+</head>
+<body>
+    <div id="open_messages">
+        <h2>Open messages from WS</h2>
+    </div>
+
+    <div id="private_messages">
+        <h2>Private messages from WS</h2>
+    </div>
+
+
+    <div id="task_messages">
+        <h2>Task messages from WS</h2>
+    </div>
+
+
+</body>
+</html>
