@@ -24,7 +24,14 @@ source venv/bin/activate
  ./manage.py migrate
 ```
 
-### 5. Run the development server
+### 6. Django channels-layers uses Redis as it can be seen in the settings.CHANNEL_LAYERS. The easiet way to achieve that is to run the following
+
+```
+docker run --rm -p 6379:6379 redis:7
+```
+
+
+### 7. Run the development server
 
 ```
  ./manage.py runserver
